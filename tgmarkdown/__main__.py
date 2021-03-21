@@ -68,7 +68,7 @@ def make_markdown(update, context):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
-    updater = Updater(Config.TG_API_TOKEN)
+    updater = Updater(Config.TG_API_TOKEN, workers=1)
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, callback=make_markdown))
     updater.dispatcher.add_error_handler(handle_error)
@@ -76,6 +76,7 @@ if __name__ == '__main__':
     if Config.HEROKU_NAME and Config.WEBHOOK_PORT:
         logging.info('Starting webhook on port %s', Config.WEBHOOK_PORT)
         updater.start_webhook(listen="0.0.0.0",
+                              bootstrap_retries=3,
                               port=Config.WEBHOOK_PORT,
                               url_path=Config.TG_API_TOKEN)
         updater.bot.setWebhook(f'https://{Config.HEROKU_NAME}.herokuapp.com/{Config.TG_API_TOKEN}')
