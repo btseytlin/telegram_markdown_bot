@@ -9,8 +9,6 @@ from tgmarkdown.error_handler import handle_error
 from tgmarkdown.renderer import TGHtmlRenderer
 
 
-
-
 def parse_entities_to_html(message_text, entities, urled=False):
     if message_text is None:
         return None
@@ -73,10 +71,10 @@ if __name__ == '__main__':
     updater.dispatcher.add_handler(MessageHandler(Filters.text, callback=make_markdown))
     updater.dispatcher.add_error_handler(handle_error)
 
-    if Config.HEROKU_NAME and Config.PORT:
-        logging.info('Starting webhook on port %s', Config.PORT)
+    if Config.HEROKU_NAME and Config.WEBHOOK_PORT:
+        logging.info('Starting webhook on port %s', Config.WEBHOOK_PORT)
         updater.start_webhook(listen="0.0.0.0",
-                              port=Config.PORT,
+                              port=Config.WEBHOOK_PORT,
                               url_path='bot')
         updater.bot.setWebhook(f'https://{Config.HEROKU_NAME}.herokuapp.com/bot')
     else:
