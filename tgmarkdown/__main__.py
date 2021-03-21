@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     if Config.HEROKU_NAME and Config.WEBHOOK_PORT:
         logging.info('Starting webhook on port %s', Config.WEBHOOK_PORT)
-        updater.start_webhook(listen="0.0.0.0",
+        updater.start_webhook(listen="127.0.0.1",
                               bootstrap_retries=3,
                               port=Config.WEBHOOK_PORT,
                               url_path=Config.TG_API_TOKEN)
