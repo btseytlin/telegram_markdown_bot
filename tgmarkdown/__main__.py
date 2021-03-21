@@ -10,6 +10,7 @@ from tgmarkdown.renderer import TGHtmlRenderer
 
 
 
+
 def parse_entities_to_html(message_text, entities, urled=False):
     if message_text is None:
         return None
@@ -65,6 +66,8 @@ def make_markdown(update, context):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+
     updater = Updater(Config.TG_API_TOKEN)
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, callback=make_markdown))
