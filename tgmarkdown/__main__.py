@@ -2,10 +2,12 @@ import telegram
 from telegram.ext import Updater, MessageHandler, Filters
 import mistune
 import sys
+import logging
 
 from tgmarkdown.config import Config
 from tgmarkdown.error_handler import handle_error
 from tgmarkdown.renderer import TGHtmlRenderer
+
 
 
 def parse_entities_to_html(message_text, entities, urled=False):
@@ -69,6 +71,7 @@ if __name__ == '__main__':
     updater.dispatcher.add_error_handler(handle_error)
 
     if Config.HEROKU_NAME and Config.PORT:
+        logging.info('Starting webhook on port %s', Config.PORT)
         updater.start_webhook(listen="0.0.0.0",
                               port=Config.PORT,
                               url_path='bot')
