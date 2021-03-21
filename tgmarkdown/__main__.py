@@ -23,7 +23,7 @@ def parse_entities_to_html(message_text, entities, urled=False):
         if entity.type == 'text_link':
             insert = '<a href="{0}">{1}</url>'.format(entity.url, text)
         elif entity.type == 'mention':
-            insert = '<a href="https://t.me/{0}">{1}</url>'.format(text.strip('@'), text)
+            insert = '<a href="https://t.me/{0}">{1}</a>'.format(text.strip('@'), text)
         elif entity.type == 'url' and urled:
             insert = '<a href="{0}">{0}</url>'.format(text)
         elif entity.type == 'bold':
@@ -55,6 +55,8 @@ def parse_entities_to_html(message_text, entities, urled=False):
 
 
 def make_markdown(update, context):
+    if not update.message or not update.message.text:
+        return
     markdown = mistune.create_markdown(renderer=TGHtmlRenderer(escape=False), plugins=['strikethrough'])
     entities = update.message.parse_entities()
     text = parse_entities_to_html(update.message.text, entities)
