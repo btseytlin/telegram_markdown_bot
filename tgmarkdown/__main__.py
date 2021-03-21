@@ -78,8 +78,9 @@ if __name__ == '__main__':
         updater.start_webhook(listen="0.0.0.0",
                               bootstrap_retries=0,
                               port=Config.WEBHOOK_PORT,
-                              url_path=Config.TG_API_TOKEN,
-                              webhook_url=f'https://{Config.HEROKU_NAME}.herokuapp.com/{Config.TG_API_TOKEN}')
+                              url_path=Config.TG_API_TOKEN)
+        updater.bot.setWebhook(f'https://{Config.HEROKU_NAME}.herokuapp.com/{Config.TG_API_TOKEN}')
     else:
+        logging.info('Starting polling')
         updater.start_polling()
     updater.idle()
