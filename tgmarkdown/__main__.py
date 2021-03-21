@@ -1,64 +1,11 @@
 import telegram
-from telegram import Update
-from telegram.ext import Updater, MessageHandler, CallbackContext
-import sys
+from telegram.ext import Updater, MessageHandler, Filters
 import mistune
+import sys
 
 from tgmarkdown.config import Config
-
-# https://markdown-it.github.io/
-# https://core.telegram.org/api/entities
-# https://mistune.readthedocs.io/en/latest/advanced.html#use-renderers
-class MyRenderer(mistune.HTMLRenderer):
-    def paragraph(self, text):
-        return self.linebreak() + text + self.linebreak()
-
-    def codespan(self, text):
-        return f'<pre>{text}</pre>'
-
-    def block_code(self, code, info=None):
-        return self.codespan(code)
-
-    def block_html(self, html):
-        return self.block_code(html)
-
-    def block_error(self, html):
-        return self.block_code(html)
-
-    def linebreak(self):
-        return '\n'
-
-    def newline(self):
-        return self.linebreak()
-
-    def heading(self, text, level):
-        return self.linebreak()+'#'*level + f' <b>{text}</b>' + self.linebreak()
-
-    def inline_html(self, text):
-        return text
-
-    def thematic_break(self):
-        return self.linebreak() + '-' * 10 + self.linebreak()
-
-    def table(self, text):
-        return text
-
-    def table_head(self, text):
-        return text
-
-    def list(self, text, ordered, level, start=None):
-        if ordered:
-            return text
-        return text
-
-    def list_item(self, text, level):
-        return self.linebreak() + ' '*level**2 + f'- {text}'
-
-    def block_quote(self, text):
-        return '> ' + text
-
-    def image(self, src, alt="", title=None):
-        return self.link(src, text=title or alt or src)
+from tgmarkdown.error_handler import handle_error
+from tgmarkdown.renderer import TGHtmlRenderer
 
 
 def parse_entities_to_html(message_text, entities, urled=False):
@@ -106,8 +53,8 @@ def parse_entities_to_html(message_text, entities, urled=False):
     return processed_text
 
 
-def make_markdown(update: Update, context: CallbackContext) -> None:
-    markdown = mistune.create_markdown(renderer=MyRenderer(), plugins=['strikethrough'])
+def make_markdown(update, context):
+    markdown = mistune.create_markdown(renderer=TGHtmlRenderer(escape=False), plugins=['strikethrough'])
     entities = update.message.parse_entities()
     text = parse_entities_to_html(update.message.text, entities)
     update.message.reply_text(markdown(text),
@@ -115,9 +62,11 @@ def make_markdown(update: Update, context: CallbackContext) -> None:
                               disable_web_page_preview=True)
 
 
-updater = Updater(Config.TG_API_TOKEN)
+if __name__ == '__main__':
+    updater = Updater(Config.TG_API_TOKEN)
 
-updater.dispatcher.add_handler(MessageHandler(filters=None, callback=make_markdown))
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, callback=make_markdown))
+    updater.dispatcher.add_error_handler(handle_error)
 
-updater.start_polling()
-updater.idle()
+    updater.start_polling()
+    updater.idle()

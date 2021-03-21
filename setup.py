@@ -6,7 +6,9 @@ with open('requirements.txt') as req_file:
 setuptools.setup(
     name='tgmarkdown',
     version='0.0.1',
+    url='https://github.com/btseytlin/telegram_markdown_bot',
     author='tg:@boris_again',
+    author_email='b.tseytlin@lambda-it.ru',
     packages=setuptools.find_packages(),
     install_requires=requirements,
     classifiers=(
