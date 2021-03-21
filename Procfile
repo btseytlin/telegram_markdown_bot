@@ -1,1 +1,1 @@
-web: python3 tgmarkdown
+worker: python3 tgmarkdown
