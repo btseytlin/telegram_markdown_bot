@@ -68,5 +68,11 @@ if __name__ == '__main__':
     updater.dispatcher.add_handler(MessageHandler(Filters.text, callback=make_markdown))
     updater.dispatcher.add_error_handler(handle_error)
 
-    updater.start_polling()
-    updater.idle()
+    if Config.HEROKU_NAME and Config.PORT:
+        updater.start_webhook(listen="0.0.0.0",
+                              port=Config.PORT,
+                              url_path='bot')
+        updater.bot.setWebhook(f'https://{Config.HEROKU_NAME}.herokuapp.com/bot')
+    else:
+        updater.start_polling()
+        updater.idle()
