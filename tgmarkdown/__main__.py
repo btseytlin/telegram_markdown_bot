@@ -21,11 +21,11 @@ def parse_entities_to_html(message_text, entities, urled=False):
 
     for entity, text in sorted(entities.items(), key=(lambda item: item[0].offset)):
         if entity.type == 'text_link':
-            insert = '<a href="{0}">{1}</url>'.format(entity.url, text)
+            insert = '<a href="{0}">{1}</a>'.format(entity.url, text)
         elif entity.type == 'mention':
             insert = '<a href="https://t.me/{0}">{1}</a>'.format(text.strip('@'), text)
         elif entity.type == 'url' and urled:
-            insert = '<a href="{0}">{0}</url>'.format(text)
+            insert = '<a href="{0}">{0}</a>'.format(text)
         elif entity.type == 'bold':
             insert = '<b>' + text + '</b>'
         elif entity.type == 'italic':
