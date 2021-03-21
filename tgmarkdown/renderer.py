@@ -45,7 +45,7 @@ class TGHtmlRenderer(mistune.HTMLRenderer):
         return text
 
     def list_item(self, text, level):
-        return self.linebreak() + ' '*level**2 + f'- {text}'
+        return ' '*level**2 + f'- {text}' + self.linebreak()
 
     def block_quote(self, text):
         return '> ' + text
